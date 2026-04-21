@@ -37,8 +37,8 @@ print("="*50)
 model = RandomForestClassifier(
     n_estimators=100,        # количество деревьев
     max_depth=10,            # максимальная глубина (чтобы не переобучаться)
-    min_samples_split=10,    # минимальное число样本 для разделения
-    min_samples_leaf=5,      # минимальное число样本 в листе
+    min_samples_split=10,    # минимальное число образцов для разделения
+    min_samples_leaf=5,      # минимальное число образцов в листе
     class_weight='balanced', # важно! автоматически учитывает дисбаланс
     random_state=42,
     n_jobs=-1                # использовать все ядра процессора
@@ -75,21 +75,28 @@ plt.ylabel('Actual')
 plt.xlabel('Predicted')
 plt.show()
 
-# ========== 5. ROC-КРИВАЯ ==========
+# ========== 5. ROC-КРИВАЯ (ОБНОВЛЕННАЯ) ==========
 plt.figure(figsize=(8, 6))
 fpr, tpr, thresholds = roc_curve(y_test, y_proba)
-plt.plot(fpr, tpr, label=f'Random Forest (AUC = {roc_auc:.4f})')
-plt.plot([0, 1], [0, 1], 'k--', label='Random Classifier')
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('ROC Curve')
-plt.legend()
+plt.plot(fpr, tpr, color='darkorange', linewidth=2, label=f'Random Forest (AUC = {roc_auc:.4f})')
+plt.plot([0, 1], [0, 1], color='navy', linestyle='--', label='Случайный классификатор (AUC = 0.5)')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate (FPR) - Ложноположительные')
+plt.ylabel('True Positive Rate (TPR) - Чувствительность')
+plt.title('ROC-кривая для обнаружения мошеннических транзакций')
+plt.legend(loc="lower right")
 plt.grid(True, alpha=0.3)
+
+# Добавим аннотацию с AUC на график
+plt.annotate(f'AUC = {roc_auc:.4f}', xy=(0.7, 0.15), fontsize=12,
+             bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="black"))
+
 plt.show()
 
 # ========== 6. ВАЖНОСТЬ ПРИЗНАКОВ ==========
 print("\n" + "="*50)
-print("4. ВАЖНОСТЬ ПРИЗНАКОВ")
+print("6. ВАЖНОСТЬ ПРИЗНАКОВ")
 print("="*50)
 
 # Получаем важность
@@ -103,9 +110,9 @@ print(importance.head(15))
 
 # Визуализация
 plt.figure(figsize=(10, 8))
-plt.barh(importance.head(15)['feature'], importance.head(15)['importance'])
-plt.xlabel('Importance')
-plt.title('Top 15 Feature Importance')
+plt.barh(importance.head(15)['feature'], importance.head(15)['importance'], color='teal')
+plt.xlabel('Важность')
+plt.title('Топ-15 важности признаков (Feature Importance)')
 plt.gca().invert_yaxis()
 plt.tight_layout()
 plt.show()

@@ -46,7 +46,6 @@ Precision: 0.77 — из 100 предсказанных мошенников 77 
 
 
 **Финальная модель:** Random Forest с параметрами:
-```python
 RandomForestClassifier(
     n_estimators=100,
     max_depth=10,
@@ -55,8 +54,11 @@ RandomForestClassifier(
     class_weight='balanced',
     random_state=42
 )
+# Кривая ROC-AUC:
+![img.png](img.png)
 
-
+# Feature importance:
+![img_1.png](img_1.png)
 
 
 
